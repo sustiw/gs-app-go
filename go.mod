@@ -1,6 +1,6 @@
 module FirstGo
 
-go 1.26
+go 1.25
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.32.26

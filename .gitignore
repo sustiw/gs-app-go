@@ -1,4 +1,5 @@
 .idea/
 *.iw
 *.iws
+*.zip
 out/

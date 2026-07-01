@@ -41,13 +41,10 @@ func TestCreatePackDetails(t *testing.T) {
 		},
 	}
 
-	// Loop through and run each scenario
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			// Call your actual service class code function
 			result := CreatePackDetails(tc.targetQuantity, packSizes)
 
-			// Deep equal checks arrays content values safely
 			if !reflect.DeepEqual(result.PackDetails, tc.expectedPacks) {
 				t.Errorf("Test Failed: %s\nInput Qty: %d\nExpected: %v\nGot:      %v",
 					tc.name, tc.targetQuantity, tc.expectedPacks, result.PackDetails)
@@ -58,14 +55,11 @@ func TestCreatePackDetails(t *testing.T) {
 	}
 }
 
-// TestDynamicSizesConfig confirms that adding or removing custom pack configurations works dynamically.
 func TestDynamicSizesConfig(t *testing.T) {
-	// Custom array without 400 or 500, but adding a unique 1500 pack size config
 	customSizes := []int{250, 1000, 1500, 2000}
 
-	// Testing input 1301 with our alternative array layout
 	result := CreatePackDetails(1301, customSizes)
-	expected := []string{"1x1500"} // 1x1500 is now closer than 1x2000 for covering 1301
+	expected := []string{"1x1500"}
 
 	if !reflect.DeepEqual(result.PackDetails, expected) {
 		t.Errorf("❌ Dynamic sizes failed! Got %v, expected %v", result.PackDetails, expected)

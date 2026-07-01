@@ -44,11 +44,9 @@ func GetAvailablePackSizes(ctx context.Context) []int {
 	bucket, file, region := getS3Config()
 	fmt.Printf("Elastic Beanstalk: Fetching live data from Bucket: [%s], File: [%s] in Region: [%s]\n", bucket, file, region)
 
-	// Create a short 3-second network deadline so S3 network hangs do not cause environment timeouts
 	s3Ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	// Load AWS SDK Configuration with explicit region configuration fallback
 	cfg, err := config.LoadDefaultConfig(s3Ctx,
 		config.WithRegion(region),
 	)
@@ -57,7 +55,6 @@ func GetAvailablePackSizes(ctx context.Context) []int {
 		return []int{250, 500, 1000, 2000, 5000}
 	}
 
-	// Initialize S3 Client internally
 	s3Client := s3.NewFromConfig(cfg)
 
 	input := &s3.GetObjectInput{

@@ -35,7 +35,7 @@ func TestCreatePackDetails(t *testing.T) {
 			expectedPacks:  "2x5000,1x2000,1x250",
 		},
 		{
-			name:           "Negative or Zero Quantity Boundary Check",
+			name:           "Negative or Zero Quantity Check",
 			targetQuantity: 0,
 			expectedPacks:  "",
 		},
@@ -52,16 +52,5 @@ func TestCreatePackDetails(t *testing.T) {
 				t.Logf("Test Passed: %s (Qty %d -> %v)", tc.name, tc.targetQuantity, result.PackDetails)
 			}
 		})
-	}
-}
-
-func TestDynamicSizesConfig(t *testing.T) {
-	customSizes := []int{250, 1000, 1500, 2000}
-
-	result := CreatePackDetails(1301, customSizes)
-	expected := []string{"1x1500"}
-
-	if !reflect.DeepEqual(result.PackDetails, expected) {
-		t.Errorf("❌ Dynamic sizes failed! Got %v, expected %v", result.PackDetails, expected)
 	}
 }

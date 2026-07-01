@@ -3,6 +3,7 @@ package handler
 import (
 	"FirstGo/config"
 	"FirstGo/service"
+	"context"
 	"encoding/json"
 	"net/http"
 )
@@ -22,14 +23,13 @@ func PackDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	packSize := config.GetAvailablePackSizes()
-
-	if len(packSize) == 0 {
+	packSizes := config.GetAvailablePackSizes(context.Background())
+	if len(packSizes) == 0 {
 		http.Error(w, "Internal Server Error: Pack sizes are empty.", http.StatusInternalServerError)
 		return
 	}
 
-	responseBody := service.CreatePackDetails(qty, packSize)
+	responseBody := service.CreatePackDetails(qty, packSizes)
 
 	json.NewEncoder(w).Encode(responseBody)
 

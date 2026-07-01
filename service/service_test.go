@@ -27,7 +27,7 @@ func TestCreatePackDetails(t *testing.T) {
 		{
 			name:           "check for 501",
 			targetQuantity: 501,
-			expectedPacks:  "1x1000",
+			expectedPacks:  "1x500,1x250",
 		},
 		{
 			name:           "check for 12001",

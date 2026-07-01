@@ -11,7 +11,7 @@ func CreatePackDetails(qty int, packSizes []int) models.ResponseData {
 
 	sortedSizes := sortSizesDescending(packSizes)
 	totalCount, remaining := findingCorrectPacks(qty, packSizes)
-	totalCount = handlingRemainingCounts(remaining, sortedSizes, totalCount)
+	totalCount = handlingRemainingCounts(remaining, sortedSizes, totalCount, qty)
 
 	finalResponse := formatPackDetailsString(sortedSizes, totalCount)
 	return models.ResponseData{
@@ -35,6 +35,14 @@ func findingCorrectPacks(qty int, packSizes []int) (map[int]int, int) {
 	totalCount := make(map[int]int)
 	remaining := qty
 	sortedSizes := sortSizesDescending(packSizes)
+
+	for _, size := range sortedSizes {
+		if remaining == size {
+			totalCount[size] = 1
+			return totalCount, 0
+		}
+	}
+
 	for _, size := range sortedSizes {
 		if remaining >= size {
 			totalCount[size] = remaining / size
@@ -44,28 +52,32 @@ func findingCorrectPacks(qty int, packSizes []int) (map[int]int, int) {
 	return totalCount, remaining
 }
 
-func handlingRemainingCounts(remaining int, sortedSizes []int, totalCount map[int]int) map[int]int {
+func handlingRemainingCounts(remaining int, sortedSizes []int, totalCount map[int]int, qty int) map[int]int {
 	if remaining <= 0 {
 		return totalCount
 	}
 
 	chosenSize := findClosestFit(remaining, sortedSizes)
-	packsInChoiceA := countCurrentBoxes(totalCount) + 1
 
-	totalTargetVolume := remaining
+	currentTotalVolume := chosenSize
 	for size, count := range totalCount {
-		totalTargetVolume += size * count
+		currentTotalVolume += size * count
 	}
+
+	currentBoxCount := countCurrentBoxes(totalCount) + 1
+
 	for i := len(sortedSizes) - 1; i >= 0; i-- {
 		nextLargerSize := sortedSizes[i]
-		if nextLargerSize >= totalTargetVolume {
-			if 1 < packsInChoiceA {
+
+		if nextLargerSize >= qty {
+			if nextLargerSize < currentTotalVolume || (nextLargerSize == currentTotalVolume && currentBoxCount > 1) {
 				optimizedCounts := make(map[int]int)
 				optimizedCounts[nextLargerSize] = 1
 				return optimizedCounts
 			}
 		}
 	}
+
 	totalCount[chosenSize]++
 	return totalCount
 }
